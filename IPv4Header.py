@@ -16,7 +16,7 @@ class IPv4Header:
 
     def __init__(self, hex_values: list[str]):
         # convert to hex vals for check sum
-        self.hex_values = [hex(int(hx, 16)) for hx in hex_values[0:20]]
+        self.checksum_hex = [hex(int(hex_values[i] + hex_values[i + 1], 16)) for i in range(0, 20, 2)]
 
         self.version = int(hex_values[0][0], 16)
         self.ihl = int(hex_values[0][1], 16)
@@ -37,7 +37,7 @@ class IPv4Header:
         self.tcp_header = TCPHeader(hex_values[20:])
 
     def get_checksum_hex(self) -> list[hex]:
-        checksum_hex = list(self.hex_values)
+        checksum_hex = list(self.checksum_hex)
         for index in CHECKSUM_INDEX:
             checksum_hex[index] = '0x0'
         return checksum_hex

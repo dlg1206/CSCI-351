@@ -9,9 +9,9 @@ class EthernetHeader:
         self.type = hex(int("".join(hex_values[12:14]), 16))
         self.ipv4_header = IPv4Header(hex_values[14:])
 
-    def __str__(self) -> str:
+    def print(self) -> str:
         return (f"===== Ethernet Header =====\n"
                 f"Destination Address:  {self.destination_mac_address}\n"
                 f"Source Address:       {self.source_mac_address}\n"
                 f"Type:                 {self.type}\n"
-                f"{self.ipv4_header}")
+                f"{self.ipv4_header.print()}")

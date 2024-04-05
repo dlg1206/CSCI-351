@@ -43,7 +43,7 @@ class IPv4Header:
         return checksum_hex
 
 
-    def __str__(self) -> str:
+    def print(self) -> str:
         return (f"======= IPv4 Header =======\n"
                 f"Version:          {self.version}\n"
                 f"IHL:              {self.ihl * 4} bytes ({self.ihl})\n"
@@ -57,7 +57,7 @@ class IPv4Header:
                 f"Header Checksum:  {self.header_checksum}\n"
                 f"Source IP:        {self.source_ip_address}\n"
                 f"Destination IP:   {self.destination_ip_address}\n"
-                f"{self.tcp_header}")
+                f"{self.tcp_header.print()}")
 
 
 def parse_fragment(hex_value: str) -> (FragmentFlag, int):

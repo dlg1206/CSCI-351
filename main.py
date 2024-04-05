@@ -60,7 +60,7 @@ if __name__ == '__main__':
         "|")
     i = EthernetHeader(list)
     validate_checksum(i.ipv4_header)
-    print(i)
+    print(i.print())
     # with open("in/tcp-2.txt") as f:
     #     val = f.readline().strip().replace(" ", "")[1:-1].split("|")
     #

@@ -33,7 +33,7 @@ class TCPHeader:
         self.checksum = hex(int("".join(hex_values[16:18]), 16))
         self.urgent_pointer = int("".join(hex_values[18:20]), 16)
 
-    def __str__(self) -> str:
+    def print(self) -> str:
         return (f"======== TCP Header =======\n"
                 f"Source Port:              {self.source_port}\n"
                 f"Destination Port:         {self.destination_port}\n"

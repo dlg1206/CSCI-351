@@ -38,7 +38,7 @@ class IPv4Header:
         self.tcp_header = TCPHeader(hex_values[20:])
 
     def print(self) -> str:
-        return (f"======= IPv4 Header =======\n"
+        return (f"============= IPv4 Header =============\n"
                 f"Version:          {self.version}\n"
                 f"IHL:              {self.ihl * 4} bytes ({self.ihl})\n"
                 f"Type of Service:  {self.type_of_service}\n"

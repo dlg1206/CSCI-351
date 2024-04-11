@@ -4,9 +4,12 @@ Description:
 
 @author Derek Garcia
 """
+import os
 import sys
 
+import Status
 from EthernetHeader import EthernetHeader
+from Exception import validate_bytes
 
 BYTES_PER_HEX = 2
 
@@ -23,13 +26,12 @@ BYTES_PER_HEX = 2
 # https://www.thegeekstuff.com/2012/05/ip-header-checksum/
 
 
-def valid_hex(hex_values: list[str]) -> bool:
+def process_data(hex_values: list[str]):
     try:
-        for hx in hex_values:
-            int(hx, 16)
-    except ValueError:
-        return False
-    return True
+        validate_bytes(hex_values)
+        print(EthernetHeader(hex_values).print())
+    except Exception as e:
+        print(f"Failed to process data | Reason: {e}", file=sys.stderr)
 
 
 def main():
@@ -40,8 +42,21 @@ def main():
                 continue
             # Clean hex values
             hex_values = line.strip().split("|")
-            print(EthernetHeader(hex_values[2:-1]).print())     # pass only relevant hex
+            process_data(hex_values[2:-1])  # pass only relevant hex
 
 
 if __name__ == '__main__':
-    main()
+    try:
+        # Check for file
+        if len(sys.argv) < 2:
+            raise Exception("Missing File Parameter")
+        # assert file exists
+        if not os.path.isfile(sys.argv[1]):
+            raise Exception(f"File '{sys.argv[1]}' does not exist")
+        # Launch the program
+        main()
+        exit(0)
+    except Exception as e:
+        print(f"{Status.Color.FAIL}Error: {e}{Status.Color.END}")
+        print("Expected Usage: python3 main.py <path to packet file>")
+        exit(1)

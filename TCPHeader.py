@@ -1,6 +1,8 @@
 from enum import Enum
 
-CHECKSUM_INDEX = {16, 17}
+import Status
+from Checksum import Checksum
+
 
 class ControlFlag(Enum):
     CWR = '0x80'
@@ -16,7 +18,7 @@ class ControlFlag(Enum):
 class TCPHeader:
     def __init__(self, hex_values: list[str]):
         # convert to hex vals for check sum
-        self.hex_values = [hex(int(hx, 16)) for hx in hex_values[0:20]]
+        self.checksum = Checksum(hex_values, 8)
 
         self.source_port = int("".join(hex_values[0:2]), 16)
         self.destination_port = int("".join(hex_values[2:4]), 16)
@@ -30,7 +32,7 @@ class TCPHeader:
         self.control_flag = control_details[2]
 
         self.window = int("".join(hex_values[14:16]), 16)
-        self.checksum = hex(int("".join(hex_values[16:18]), 16))
+        self.header_checksum = self.checksum.get_checksum_value()
         self.urgent_pointer = int("".join(hex_values[18:20]), 16)
 
     def print(self) -> str:
@@ -43,8 +45,9 @@ class TCPHeader:
                 f"Reserved:                 {self.reserved}\n"
                 f"Control Flag:             {self.control_flag.name} ({self.control_flag.value})\n"
                 f"Window:                   {self.window}\n"
-                f"Checksum:                 {self.checksum}\n"
-                f"Urgent Pointer:           {self.urgent_pointer}")
+                f"Checksum:                 {self.header_checksum}\n"
+                f"Urgent Pointer:           {self.urgent_pointer}\n"
+                f"Valid Checksum:           {Status.valid() if self.checksum.validate() else Status.invalid()}\n")
 
 
 def parse_control(hex_value: str) -> (int, int, ControlFlag):

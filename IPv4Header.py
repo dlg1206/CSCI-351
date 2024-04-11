@@ -1,6 +1,8 @@
 from enum import Enum
 
+import Status
 from Addresses import IPAddress
+from Checksum import Checksum
 from TCPHeader import TCPHeader
 
 CHECKSUM_INDEX = {10, 11}
@@ -15,8 +17,7 @@ class FragmentFlag(Enum):
 class IPv4Header:
 
     def __init__(self, hex_values: list[str]):
-        # convert to hex vals for check sum
-        self.checksum_hex = [hex(int(hex_values[i] + hex_values[i + 1], 16)) for i in range(0, 20, 2)]
+        self.checksum = Checksum(hex_values, 5)
 
         self.version = int(hex_values[0][0], 16)
         self.ihl = int(hex_values[0][1], 16)
@@ -31,17 +32,10 @@ class IPv4Header:
 
         self.ttl = int(hex_values[8], 16)
         self.protocol = int(hex_values[9], 16)
-        self.header_checksum = hex(int("".join(hex_values[10:12]), 16))
+        self.header_checksum = self.checksum.get_checksum_value()
         self.source_ip_address = IPAddress(hex_values[12:16])
         self.destination_ip_address = IPAddress(hex_values[16:20])
         self.tcp_header = TCPHeader(hex_values[20:])
-
-    def get_checksum_hex(self) -> list[hex]:
-        checksum_hex = list(self.checksum_hex)
-        for index in CHECKSUM_INDEX:
-            checksum_hex[index] = '0x0'
-        return checksum_hex
-
 
     def print(self) -> str:
         return (f"======= IPv4 Header =======\n"
@@ -57,6 +51,7 @@ class IPv4Header:
                 f"Header Checksum:  {self.header_checksum}\n"
                 f"Source IP:        {self.source_ip_address}\n"
                 f"Destination IP:   {self.destination_ip_address}\n"
+                f"Valid Checksum:   {Status.valid() if self.checksum.validate() else Status.invalid()}\n"
                 f"{self.tcp_header.print()}")
 
 

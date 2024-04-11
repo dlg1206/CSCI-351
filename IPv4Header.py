@@ -1,3 +1,10 @@
+"""
+File: IPv4Header.py
+Description: Representation of an IPv4 Header
+
+@author Derek Garcia
+"""
+
 from enum import Enum
 
 import Status
@@ -5,18 +12,27 @@ from Addresses import IPAddress
 from Checksum import Checksum
 from TCPHeader import TCPHeader
 
-CHECKSUM_INDEX = {10, 11}
-
 
 class FragmentFlag(Enum):
+    """
+    Utility Fragment Flag Enum
+    """
     RESERVED = '0x0'
     DONT_FRAGMENT = '0x2'
     MORE_FRAGMENT = '0x1'
 
 
 class IPv4Header:
+    """
+    Representation of an IPv4 Header
+    """
 
-    def __init__(self, hex_values: list[str]):
+    def __init__(self, hex_values: list[str]) -> None:
+        """
+        Create new IPv4 Header from provided hex values
+
+        :param hex_values: Packet information as a list of hex values
+        """
         self.checksum = Checksum(hex_values, 5)
 
         self.version = int(hex_values[0][0], 16)
@@ -35,9 +51,14 @@ class IPv4Header:
         self.header_checksum = self.checksum.get_checksum_value()
         self.source_ip_address = IPAddress(hex_values[12:16])
         self.destination_ip_address = IPAddress(hex_values[16:20])
-        self.tcp_header = TCPHeader(hex_values[20:])
+        self.tcp_header = TCPHeader(hex_values[20:])  # pass next section of hex to child TCP header
 
     def print(self) -> str:
+        """
+        Pretty print IPv4 Header data
+
+        :return: Formatted IPv4 Header data
+        """
         return (f"============= IPv4 Header =============\n"
                 f"Version:          {self.version}\n"
                 f"IHL:              {self.ihl * 4} bytes ({self.ihl})\n"
@@ -52,12 +73,16 @@ class IPv4Header:
                 f"Source IP:        {self.source_ip_address}\n"
                 f"Destination IP:   {self.destination_ip_address}\n"
                 f"Valid Checksum:   {Status.valid() if self.checksum.validate() else Status.invalid()}\n"
-                f"{self.tcp_header.print()}")
+                f"{self.tcp_header.print()}")  # pass next section of hex to child TCP header
 
 
 def parse_fragment(hex_value: str) -> (FragmentFlag, int):
-    # https://www.geeksforgeeks.org/python-ways-to-convert-hex-into-binary/
-    # https://www.javatpoint.com/how-to-convert-hexadecimal-to-binary-in-python
-    bits = "{0:016b}".format(int(hex_value, 16), 'b')
+    """
+    Parse fragment details from the give hex value
 
+    :param hex_value: Hex value to interpret
+    :return: (Fragment Flag, Fragment Offset)
+    """
+    # convert hex to bits and interpret
+    bits = "{0:016b}".format(int(hex_value, 16), 'b')
     return FragmentFlag(hex(int(bits[0:3], 2))), int(bits[3:], 2)

@@ -1,6 +1,6 @@
 """
 File: main.py
-Description: 
+Description: Main driver for processing packet files
 
 @author Derek Garcia
 """
@@ -9,33 +9,29 @@ import sys
 
 import Status
 from EthernetHeader import EthernetHeader
-from Exception import validate_bytes
-
-BYTES_PER_HEX = 2
+from Exception import validate_hex
 
 
-#
-# Provide usage and/or operation messaging
-# Process the Ethernet header fields - https://www.geeksforgeeks.org/ethernet-frame-format/
-# Process the IP header fields - https://www.rfc-editor.org/rfc/rfc791#page-11
-# Process the TCP header fields - https://www.rfc-editor.org/rfc/rfc9293#name-header-format
-# Calculate the IP and TCP header checksum and compare them to the actual field values
-# Document sources used in this program
+def process_data(hex_values: list[str]) -> None:
+    """
+    Attempt to process packet data
 
-# https://www.youtube.com/watch?v=7LniwyiH0SM
-# https://www.thegeekstuff.com/2012/05/ip-header-checksum/
-
-
-def process_data(hex_values: list[str]):
+    :param hex_values: List of hex values representing packet data
+    """
     try:
-        validate_bytes(hex_values)
+        validate_hex(hex_values)
         print(EthernetHeader(hex_values).print())
     except Exception as e:
         print(f"Failed to process data | Reason: {e}", file=sys.stderr)
 
 
-def main():
-    with open(sys.argv[1]) as packet_file:
+def main(packet_file_path: str) -> None:
+    """
+    Open packet file and process all packet data
+
+    :param packet_file_path: Path to packet file
+    """
+    with open(packet_file_path) as packet_file:
         for line in packet_file:
             # Skip if doesn't have byte string
             if line[0] != "|":
@@ -54,7 +50,7 @@ if __name__ == '__main__':
         if not os.path.isfile(sys.argv[1]):
             raise Exception(f"File '{sys.argv[1]}' does not exist")
         # Launch the program
-        main()
+        main(sys.argv[1])
         exit(0)
     except Exception as e:
         print(f"{Status.Color.FAIL}Error: {e}{Status.Color.END}")

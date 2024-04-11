@@ -1,6 +1,6 @@
 """
 File: Checksum.py
-Description: 
+Description: Utility for calculating checksums with provided hex values
 
 @author Derek Garcia
 """
@@ -9,14 +9,33 @@ SIXTEEN_BITS = 65535  # equivalent to 16 bits of 1
 
 
 class Checksum:
-    def __init__(self, hex_values: list[str], checksum_index: int):
+    """
+    Utility class for validating checksums
+    """
+
+    def __init__(self, hex_values: list[str], checksum_index: int) -> None:
+        """
+        Create a new Checksum
+
+        :param hex_values: List of hex values that make up a packet
+        :param checksum_index: index of the checksum value
+        """
+        # Convert to 10 hex values
         self.checksum_hex = [hex(int(hex_values[i] + hex_values[i + 1], 16)) for i in range(0, 20, 2)]
         self.checksum_index = checksum_index
 
     def get_checksum_value(self) -> hex:
+        """
+        :return: Checksum
+        """
         return self.checksum_hex[self.checksum_index]
 
     def validate(self) -> bool:
+        """
+        Validate the checksum
+
+        :return: True if valid, false otherwise
+        """
         check_sum = 0
         for i in range(0, len(self.checksum_hex)):
             # skip checksum index
@@ -29,5 +48,6 @@ class Checksum:
                 bits = "{0:017b}".format(check_sum, 'b')
                 check_sum = int(bits[1:], 2) + 1
 
+        # Compute one's complement and compare against checksum
         ones_comp = [str(int(bit) ^ 1) for bit in "{0:016b}".format(check_sum, 'b')]
         return "".join(ones_comp) == "{0:016b}".format(int(self.checksum_hex[self.checksum_index], 16), 'b')

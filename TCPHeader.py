@@ -1,3 +1,10 @@
+"""
+File: TCPHeader.py
+Description: Representation of a TCP Header
+
+@author Derek Garcia
+"""
+
 from enum import Enum
 
 import Status
@@ -5,6 +12,9 @@ from Checksum import Checksum
 
 
 class ControlFlag(Enum):
+    """
+    Utility Control Flag Enum
+    """
     CWR = 7
     ECE = 6
     URG = 5
@@ -16,7 +26,16 @@ class ControlFlag(Enum):
 
 
 class ControlFlags:
-    def __init__(self, bits: str):
+    """
+    Utility collection of Control Flags
+    """
+
+    def __init__(self, bits: str) -> None:
+        """
+        Create a new list of Control Flags
+
+        :param bits: Bits to check for toggled flags
+        """
         self.value = hex(int(bits, 2))
         self.flags = []
         # append flag if bit is on
@@ -24,13 +43,26 @@ class ControlFlags:
             if bits[i] == '1':
                 self.flags.append(ControlFlag(i))
 
-    def print(self):
+    def print(self) -> str:
+        """
+        Pretty print Control Flag data
+
+        :return: Formatted Control Flag data
+        """
         return f"{self.value} ({', '.join([flag.name for flag in self.flags])})"
 
 
-
 class TCPHeader:
+    """
+    Representation of a TCP Header
+    """
+
     def __init__(self, hex_values: list[str]):
+        """
+        Create new TCP Header from provided hex values
+
+        :param hex_values: Packet information as a list of hex values
+        """
         # convert to hex vals for check sum
         self.checksum = Checksum(hex_values, 8)
 
@@ -39,7 +71,7 @@ class TCPHeader:
         self.sequence_number = int("".join(hex_values[4:8]), 16)
         self.acknowledgement_number = int("".join(hex_values[8:12]), 16)
 
-        # parse control
+        # parse control flags
         control_details = parse_control(hex_values[13])
         self.data_offset = control_details[0]
         self.reserved = control_details[1]
@@ -50,6 +82,11 @@ class TCPHeader:
         self.urgent_pointer = int("".join(hex_values[18:20]), 16)
 
     def print(self) -> str:
+        """
+        Pretty print TCP Header data
+
+        :return: Formatted TCP Header data
+        """
         return (f"============== TCP Header =============\n"
                 f"Source Port:              {self.source_port}\n"
                 f"Destination Port:         {self.destination_port}\n"
@@ -65,7 +102,12 @@ class TCPHeader:
 
 
 def parse_control(hex_value: str) -> (int, int, ControlFlags):
-    # https://www.geeksforgeeks.org/python-ways-to-convert-hex-into-binary/
-    # https://www.javatpoint.com/how-to-convert-hexadecimal-to-binary-in-python
+    """
+    Parse Control flags details
+
+    :param hex_value: Hex value to interpret
+    :return: (Data Offset, Reserved, Control Flags)
+    """
+    # convert hex to bits and interpret
     bits = "{0:016b}".format(int(hex_value, 16), 'b')
     return int(bits[0:4], 2), int(bits[4:8], 2), ControlFlags(bits[8:])

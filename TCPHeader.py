@@ -87,6 +87,7 @@ class TCPHeader:
 
         :return: Formatted TCP Header data
         """
+        calculated_checksum = self.checksum.calculate()
         return (f"============== TCP Header =============\n"
                 f"Source Port:              {self.source_port}\n"
                 f"Destination Port:         {self.destination_port}\n"
@@ -98,7 +99,7 @@ class TCPHeader:
                 f"Window:                   {self.window}\n"
                 f"Checksum:                 {self.header_checksum}\n"
                 f"Urgent Pointer:           {self.urgent_pointer}\n"
-                f"Valid Checksum:           {Status.valid() if self.checksum.validate() else Status.invalid()}\n")
+                f"Valid Checksum:           {Status.valid() if calculated_checksum == self.header_checksum else Status.invalid()} (Calculated result: {calculated_checksum})")
 
 
 def parse_control(hex_value: str) -> (int, int, ControlFlags):

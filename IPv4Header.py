@@ -59,6 +59,7 @@ class IPv4Header:
 
         :return: Formatted IPv4 Header data
         """
+        calculated_checksum = self.checksum.calculate()
         return (f"============= IPv4 Header =============\n"
                 f"Version:          {self.version}\n"
                 f"IHL:              {self.ihl * 4} bytes ({self.ihl})\n"
@@ -72,7 +73,7 @@ class IPv4Header:
                 f"Header Checksum:  {self.header_checksum}\n"
                 f"Source IP:        {self.source_ip_address}\n"
                 f"Destination IP:   {self.destination_ip_address}\n"
-                f"Valid Checksum:   {Status.valid() if self.checksum.validate() else Status.invalid()}\n"
+                f"Valid Checksum:   {Status.valid() if calculated_checksum == self.header_checksum else Status.invalid()} (Calculated result: {calculated_checksum})\n"
                 f"{self.tcp_header.print()}")  # pass next section of hex to child TCP header
 
 

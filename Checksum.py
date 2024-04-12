@@ -30,11 +30,11 @@ class Checksum:
         """
         return self.checksum_hex[self.checksum_index]
 
-    def validate(self) -> bool:
+    def calculate(self) -> hex:
         """
-        Validate the checksum
+        Calculate the checksum
 
-        :return: True if valid, false otherwise
+        :return: Hex value of checksum
         """
         check_sum = 0
         for i in range(0, len(self.checksum_hex)):
@@ -48,6 +48,6 @@ class Checksum:
                 bits = "{0:017b}".format(check_sum, 'b')
                 check_sum = int(bits[1:], 2) + 1
 
-        # Compute one's complement and compare against checksum
+        # Flip bits to compute ones complement
         ones_comp = [str(int(bit) ^ 1) for bit in "{0:016b}".format(check_sum, 'b')]
-        return "".join(ones_comp) == "{0:016b}".format(int(self.checksum_hex[self.checksum_index], 16), 'b')
+        return hex(int("".join(ones_comp), 2))

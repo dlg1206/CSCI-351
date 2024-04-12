@@ -64,7 +64,8 @@ class TCPHeader:
         :param hex_values: Packet information as a list of hex values
         """
         # convert to hex vals for check sum
-        self.checksum = Checksum(hex_values, 8)
+        self.checksum = Checksum(hex_values[:32], 14)
+        hex_values = hex_values[12:]    # remove pseudo header for processing
 
         self.source_port = int("".join(hex_values[0:2]), 16)
         self.destination_port = int("".join(hex_values[2:4]), 16)

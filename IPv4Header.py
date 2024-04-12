@@ -33,7 +33,7 @@ class IPv4Header:
 
         :param hex_values: Packet information as a list of hex values
         """
-        self.checksum = Checksum(hex_values, 5)
+        self.checksum = Checksum(hex_values[0:20], 5)
 
         self.version = int(hex_values[0][0], 16)
         self.ihl = int(hex_values[0][1], 16)
@@ -51,7 +51,15 @@ class IPv4Header:
         self.header_checksum = self.checksum.get_checksum_value()
         self.source_ip_address = IPAddress(hex_values[12:16])
         self.destination_ip_address = IPAddress(hex_values[16:20])
-        self.tcp_header = TCPHeader(hex_values[20:])  # pass next section of hex to child TCP header
+        # Build TCP pseudo header
+        pseudo_header = hex_values[12:20]  # src and dest ip
+        pseudo_header.append("00")  # reserved bits
+        pseudo_header.append(hex_values[9])  # protocol
+        # calc TCP length and convert to hex
+        tcp_len = "{:04x}".format(self.total_length - self.ihl * 4)
+        pseudo_header.append(tcp_len[:2])
+        pseudo_header.append(tcp_len[2:])
+        self.tcp_header = TCPHeader(pseudo_header + hex_values[20:])  # pass next section of hex to child TCP header
 
     def print(self) -> str:
         """

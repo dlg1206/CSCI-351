@@ -3,6 +3,7 @@ File: Exception.py
 Description: Collection of custom exceptions when parsing
 
 @author Derek Garcia
+@contact dlg1206@rit.edu
 """
 
 MIN_BYTES = 54  # Eth Header + IPv4 Header + TCP Header => 14 + 20 + 20 => 54

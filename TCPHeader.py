@@ -3,6 +3,7 @@ File: TCPHeader.py
 Description: Representation of a TCP Header
 
 @author Derek Garcia
+@contact dlg1206@rit.edu
 """
 
 from enum import Enum
@@ -65,7 +66,7 @@ class TCPHeader:
         """
         # convert to hex vals for check sum
         self.checksum = Checksum(hex_values[:32], 14)
-        hex_values = hex_values[12:]    # remove pseudo header for processing
+        hex_values = hex_values[12:]  # remove pseudo header for processing
 
         self.source_port = int("".join(hex_values[0:2]), 16)
         self.destination_port = int("".join(hex_values[2:4]), 16)

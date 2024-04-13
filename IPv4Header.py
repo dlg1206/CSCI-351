@@ -3,6 +3,7 @@ File: IPv4Header.py
 Description: Representation of an IPv4 Header
 
 @author Derek Garcia
+@contact dlg1206@rit.edu
 """
 
 from enum import Enum

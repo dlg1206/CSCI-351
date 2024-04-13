@@ -3,6 +3,7 @@ File: Checksum.py
 Description: Utility for calculating checksums with provided hex values
 
 @author Derek Garcia
+@contact dlg1206@rit.edu
 """
 
 SIXTEEN_BITS = 65535  # equivalent to 16 bits of 1
@@ -41,25 +42,14 @@ class Checksum:
             print(bin(check_sum)[2:])
             # skip checksum index
             if i == self.checksum_index:
-                # print(f"{hex(check_sum)[2:]}\t->\t{bin(check_sum)[2:]}")
-                # print(f"{0}\t->\t{bin(0)[2:]}")
-                # print(f"{hex(check_sum)[2:]}\t=\t{bin(check_sum)[2:]}\n")
                 continue
             # update total
-            # print(f"{hex(check_sum)[2:]}\t->\t{bin(check_sum)[2:]}")
-            # print(f"{self.checksum_hex[i][2:]}\t->\t{bin(int(self.checksum_hex[i], 16))[2:]}")
             check_sum = check_sum + int(self.checksum_hex[i], 16)
-            # print(f"{hex(check_sum)[2:]}\t=\t{bin(check_sum)[2:]}\n")
             # carry 1 if > 16 bits
             if check_sum > SIXTEEN_BITS:
-                # print("WRAP")
-                # print(f"{hex(check_sum)[2:]}\t->\t{bin(check_sum)[2:]}")
                 bits = "{0:017b}".format(check_sum, 'b')
                 check_sum = int(bits[1:], 2) + 1
-                # print(f"{hex(check_sum)[2:]}\t=\t{bin(check_sum)[2:]}\n")
 
         # Flip bits to compute ones complement
         ones_comp = [str(int(bit) ^ 1) for bit in bin(check_sum)[2:]]
-        print(f"ones: {''.join(ones_comp)}")
-        print(f"chek: {"{0:016b}".format(int(self.checksum_hex[self.checksum_index], 16), 'b')}")
         return hex(int("".join(ones_comp), 2))

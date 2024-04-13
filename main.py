@@ -3,6 +3,7 @@ File: main.py
 Description: Main driver for processing packet files
 
 @author Derek Garcia
+@contact dlg1206@rit.edu
 """
 import os
 import sys

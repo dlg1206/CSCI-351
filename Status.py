@@ -3,6 +3,7 @@ File: Status.py
 Description: Utility status printer
 
 @author Derek Garcia
+@contact dlg1206@rit.edu
 """
 
 

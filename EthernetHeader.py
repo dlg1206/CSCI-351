@@ -3,6 +3,7 @@ File: EthernetHeader.py
 Description: Representation of an Ethernet Header
 
 @author Derek Garcia
+@contact dlg1206@rit.edu
 """
 
 from Addresses import MACAddress

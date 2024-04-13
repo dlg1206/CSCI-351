@@ -3,6 +3,7 @@ File: Addresses.py
 Description: Utility classes to format MAC and IP addresses
 
 @author Derek Garcia
+@contact dlg1206@rit.edu
 """
 
 

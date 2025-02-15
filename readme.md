@@ -1,3 +1,5 @@
+⚠️ **This project follows an Academic Integrity Notice. See the [NOTICE](NOTICE) file for details.** ⚠️ 
+
 # CSCI 351: Programming Assignment 1
 
 > Derek Garcia
